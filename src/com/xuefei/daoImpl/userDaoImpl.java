@@ -7,13 +7,13 @@ import java.sql.SQLException;
 
 import com.xuefei.dao.userDao;
 import com.xuefei.entity.user;
-import com.xuefei.util.jdbcUtil;
+import com.xuefei.util.JdbcUtil;
 
 public class userDaoImpl implements userDao {
 
 	@Override
 	public void addUser(user u) {
-		Connection con = jdbcUtil.getConnect();
+		Connection con = JdbcUtil.getConnect();
 		String sql="INSERT INTO USER(NAME,PASSWORD,age,gender,telphone,email) VALUES (?,?,?,?,?,?)";
 		PreparedStatement psm = null;
 		try {
@@ -28,13 +28,13 @@ public class userDaoImpl implements userDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			jdbcUtil.close(psm,con);
+			JdbcUtil.close(psm,con);
 		}
 	}
 
 	@Override
 	public user findByName(String name) {
-		Connection con = jdbcUtil.getConnect();
+		Connection con = JdbcUtil.getConnect();
 		String sql="SELECT * FROM USER WHERE NAME=?";
 		PreparedStatement psm = null;
 		ResultSet rst =null;
@@ -61,7 +61,7 @@ public class userDaoImpl implements userDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			jdbcUtil.close(rst, psm, con);
+			JdbcUtil.close(rst, psm, con);
 		} 	
 		return u;
 	}

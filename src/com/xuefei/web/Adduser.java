@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.xuefei.entity.user;
 import com.xuefei.service.userService;
 import com.xuefei.serviceImpl.userServiceImpl;
+import com.xuefei.util.WebUtil;
 
 public class Adduser extends HttpServlet {
 
@@ -18,19 +19,8 @@ public class Adduser extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
-		String name=request.getParameter("name");
-		String password=request.getParameter("password");
-		String age=request.getParameter("age");
-		String gender=request.getParameter("gender");
-		String telphone=request.getParameter("telphone");
-		String email=request.getParameter("email");
-		user u=new user();
-		u.setName(name);
-		u.setPassword(password);
-		u.setAge(age);
-		u.setGender(gender);
-		u.setTelphone(telphone);
-		u.setEmail(email);
+		user u = WebUtil.copyRequestToBean(request, user.class);
+		String name=u.getName();
 		userService se=new userServiceImpl();
 		boolean tag = se.checkName(name);
 		if(tag==false){
@@ -41,7 +31,6 @@ public class Adduser extends HttpServlet {
 		}
 		
 	}
-
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doGet(request, response);
