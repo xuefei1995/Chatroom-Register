@@ -1,9 +1,9 @@
 package com.xuefei.daoImpl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 
 import com.xuefei.dao.userDao;
 import com.xuefei.entity.user;
@@ -12,57 +12,29 @@ import com.xuefei.util.JdbcUtil;
 public class userDaoImpl implements userDao {
 
 	@Override
-	public void addUser(user u) {
-		Connection con = JdbcUtil.getConnect();
+	public void addUser(user u) {		
+		QueryRunner qr = new QueryRunner(JdbcUtil.getDataSource());
+		Object[] obj={u.getName(),u.getPassword(),u.getAge(), u.getGender(),u.getTelphone(),u.getEmail()};
 		String sql="INSERT INTO USER(NAME,PASSWORD,age,gender,telphone,email) VALUES (?,?,?,?,?,?)";
-		PreparedStatement psm = null;
 		try {
-			psm = con.prepareStatement(sql);
-			psm.setString(1, u.getName());
-			psm.setString(2, u.getPassword());
-			psm.setString(3, u.getAge());
-			psm.setString(4, u.getGender());
-			psm.setString(5, u.getTelphone());
-			psm.setString(6, u.getEmail());
-			psm.executeUpdate();
-		} catch (SQLException e) {
+			qr.update(sql, obj);
+		} catch (SQLException e) {			
 			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(psm,con);
 		}
 	}
 
 	@Override
 	public user findByName(String name) {
-		Connection con = JdbcUtil.getConnect();
+		QueryRunner qr = new QueryRunner(JdbcUtil.getDataSource());
 		String sql="SELECT * FROM USER WHERE NAME=?";
-		PreparedStatement psm = null;
-		ResultSet rst =null;
+		Object[] obj={name};
 		user u=null;
 		try {
-			psm=con.prepareStatement(sql);
-			psm.setString(1, name);
-			rst=psm.executeQuery();
-			if(rst.next()){
-				String myname=rst.getString("name");
-				String mypassword=rst.getString("password");
-				String myage=rst.getString("age");
-				String mygender=rst.getString("gender");
-				String mytelphone=rst.getString("telphone");
-				String myemail=rst.getString("email");
-				u=new user();
-				u.setName(myname);
-				u.setPassword(mypassword);
-				u.setAge(myage);
-				u.setGender(mygender);
-				u.setTelphone(mytelphone);
-				u.setEmail(myemail);				
-			}
+			u = (user)qr.query(sql, new BeanHandler(user.class), obj);
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			JdbcUtil.close(rst, psm, con);
-		} 	
-		return u;
+		}
+		return u;	
 	}
+
 }

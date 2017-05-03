@@ -28,8 +28,7 @@ public class Adduser extends HttpServlet {
 			request.getRequestDispatcher("/registsuccess.jsp").forward(request, response);
 		}else{
 			request.getRequestDispatcher("/registdefault.jsp").forward(request, response);
-		}
-		
+		}		
 	}
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
